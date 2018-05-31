@@ -18,7 +18,6 @@ class MP {
     private $ll_access_token;
     private $access_data;
     private $sandbox = FALSE;
-    private $mp_client;
 
     function __construct() {
         $i = func_num_args();
@@ -38,7 +37,7 @@ class MP {
 
         if ($i == 3) {
           $this->ll_access_token = func_get_arg(0);
-          $this->mp_client = $this->setApiBaseUrl(func_get_arg(1));
+          $this->setApiBaseUrl(func_get_arg(1));
         }
 
     }
@@ -74,7 +73,7 @@ class MP {
             'grant_type' => 'client_credentials'
         );
 
-        $access_data = $this->mp_client->post(array(
+        $access_data = MPRestClient::post(array(
             "uri" => "/oauth/token",
             "data" => $app_client_values,
             "headers" => array(
@@ -106,7 +105,7 @@ class MP {
             )
         );
 
-        $payment_info = $this->mp_client->get($request);
+        $payment_info = MPRestClient::get($request);
         return $payment_info;
     }
     public function get_payment_info($id) {
@@ -126,7 +125,7 @@ class MP {
             )
         );
 
-        $authorized_payment_info = $this->mp_client->get($request);
+        $authorized_payment_info = MPRestClient::get($request);
         return $authorized_payment_info;
     }
 
@@ -145,7 +144,7 @@ class MP {
             )
         );
 
-        $response = $this->mp_client->post($request);
+        $response = MPRestClient::post($request);
         return $response;
     }
 
@@ -165,7 +164,7 @@ class MP {
             )
         );
 
-        $response = $this->mp_client->put($request);
+        $response = MPRestClient::put($request);
         return $response;
     }
 
@@ -185,7 +184,7 @@ class MP {
             )
         );
 
-        $response = $this->mp_client->put($request);
+        $response = MPRestClient::put($request);
         return $response;
     }
 
@@ -209,7 +208,7 @@ class MP {
             ))
         );
 
-        $collection_result = $this->mp_client->get($request);
+        $collection_result = MPRestClient::get($request);
         return $collection_result;
     }
 
@@ -227,7 +226,7 @@ class MP {
             "data" => $preference
         );
 
-        $preference_result = $this->mp_client->post($request);
+        $preference_result = MPRestClient::post($request);
         return $preference_result;
     }
 
@@ -246,7 +245,7 @@ class MP {
             "data" => $preference
         );
 
-        $preference_result = $this->mp_client->put($request);
+        $preference_result = MPRestClient::put($request);
         return $preference_result;
     }
 
@@ -263,7 +262,7 @@ class MP {
             )
         );
 
-        $preference_result = $this->mp_client->get($request);
+        $preference_result = MPRestClient::get($request);
         return $preference_result;
     }
 
@@ -281,7 +280,7 @@ class MP {
             "data" => $preapproval_payment
         );
 
-        $preapproval_payment_result = $this->mp_client->post($request);
+        $preapproval_payment_result = MPRestClient::post($request);
         return $preapproval_payment_result;
     }
 
@@ -298,7 +297,7 @@ class MP {
             )
         );
 
-        $preapproval_payment_result = $this->mp_client->get($request);
+        $preapproval_payment_result = MPRestClient::get($request);
         return $preapproval_payment_result;
     }
 
@@ -317,7 +316,7 @@ class MP {
             "data" => $preapproval_payment
         );
 
-        $preapproval_payment_result = $this->mp_client->put($request);
+        $preapproval_payment_result = MPRestClient::put($request);
         return $preapproval_payment_result;
     }
 
@@ -344,7 +343,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = $this->mp_client->get($request);
+        $result = MPRestClient::get($request);
         return $result;
     }
 
@@ -369,7 +368,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = $this->mp_client->post($request);
+        $result = MPRestClient::post($request);
         return $result;
     }
 
@@ -394,7 +393,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = $this->mp_client->put($request);
+        $result = MPRestClient::put($request);
         return $result;
     }
 
@@ -418,7 +417,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = $this->mp_client->delete($request);
+        $result = MPRestClient::delete($request);
         return $result;
     }
 
