@@ -18,21 +18,23 @@ class MP {
     private $ll_access_token;
     private $access_data;
     private $sandbox = FALSE;
+    private $mp_client;
 
     function __construct() {
         $i = func_num_args();
 
         if ($i > 2 || $i < 1) {
-            throw new MercadoPagoException("Invalid arguments. Use CLIENT_ID and CLIENT SECRET, or ACCESS_TOKEN");
+            throw new MercadoPagoException("Invalid arguments.");
         }
 
         if ($i == 1) {
             $this->ll_access_token = func_get_arg(0);
+            $this->mp_client = $this->initializeMPRestClient();
         }
 
         if ($i == 2) {
-            $this->client_id = func_get_arg(0);
-            $this->client_secret = func_get_arg(1);
+          $this->ll_access_token = func_get_arg(0);
+          $this->mp_client = $this->initializeMPRestClient(func_get_arg(1));
         }
     }
 
@@ -42,6 +44,15 @@ class MP {
         }
 
         return $this->sandbox;
+    }
+
+    /**
+     * Initialize MPRestClient
+     * @param string $api_base_url
+     */
+
+    public function initializeMPRestClient($api_base_url = null){
+      return new MPRestClient($api_base_url);
     }
 
     /**
@@ -58,7 +69,7 @@ class MP {
             'grant_type' => 'client_credentials'
         );
 
-        $access_data = MPRestClient::post(array(
+        $access_data = $this->mp_client->post(array(
             "uri" => "/oauth/token",
             "data" => $app_client_values,
             "headers" => array(
@@ -90,7 +101,7 @@ class MP {
             )
         );
 
-        $payment_info = MPRestClient::get($request);
+        $payment_info = $this->mp_client->get($request);
         return $payment_info;
     }
     public function get_payment_info($id) {
@@ -110,7 +121,7 @@ class MP {
             )
         );
 
-        $authorized_payment_info = MPRestClient::get($request);
+        $authorized_payment_info = $this->mp_client->get($request);
         return $authorized_payment_info;
     }
 
@@ -129,7 +140,7 @@ class MP {
             )
         );
 
-        $response = MPRestClient::post($request);
+        $response = $this->mp_client->post($request);
         return $response;
     }
 
@@ -149,7 +160,7 @@ class MP {
             )
         );
 
-        $response = MPRestClient::put($request);
+        $response = $this->mp_client->put($request);
         return $response;
     }
 
@@ -169,7 +180,7 @@ class MP {
             )
         );
 
-        $response = MPRestClient::put($request);
+        $response = $this->mp_client->put($request);
         return $response;
     }
 
@@ -193,7 +204,7 @@ class MP {
             ))
         );
 
-        $collection_result = MPRestClient::get($request);
+        $collection_result = $this->mp_client->get($request);
         return $collection_result;
     }
 
@@ -211,7 +222,7 @@ class MP {
             "data" => $preference
         );
 
-        $preference_result = MPRestClient::post($request);
+        $preference_result = $this->mp_client->post($request);
         return $preference_result;
     }
 
@@ -230,7 +241,7 @@ class MP {
             "data" => $preference
         );
 
-        $preference_result = MPRestClient::put($request);
+        $preference_result = $this->mp_client->put($request);
         return $preference_result;
     }
 
@@ -247,7 +258,7 @@ class MP {
             )
         );
 
-        $preference_result = MPRestClient::get($request);
+        $preference_result = $this->mp_client->get($request);
         return $preference_result;
     }
 
@@ -265,7 +276,7 @@ class MP {
             "data" => $preapproval_payment
         );
 
-        $preapproval_payment_result = MPRestClient::post($request);
+        $preapproval_payment_result = $this->mp_client->post($request);
         return $preapproval_payment_result;
     }
 
@@ -282,7 +293,7 @@ class MP {
             )
         );
 
-        $preapproval_payment_result = MPRestClient::get($request);
+        $preapproval_payment_result = $this->mp_client->get($request);
         return $preapproval_payment_result;
     }
 
@@ -301,7 +312,7 @@ class MP {
             "data" => $preapproval_payment
         );
 
-        $preapproval_payment_result = MPRestClient::put($request);
+        $preapproval_payment_result = $this->mp_client->put($request);
         return $preapproval_payment_result;
     }
 
@@ -328,7 +339,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = MPRestClient::get($request);
+        $result = $this->mp_client->get($request);
         return $result;
     }
 
@@ -353,7 +364,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = MPRestClient::post($request);
+        $result = $this->mp_client->post($request);
         return $result;
     }
 
@@ -378,7 +389,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = MPRestClient::put($request);
+        $result = $this->mp_client->put($request);
         return $result;
     }
 
@@ -402,7 +413,7 @@ class MP {
             $request["params"]["access_token"] = $this->get_access_token();
         }
 
-        $result = MPRestClient::delete($request);
+        $result = $this->mp_client->delete($request);
         return $result;
     }
 
@@ -414,7 +425,27 @@ class MP {
  * MercadoPago cURL RestClient
  */
 class MPRestClient {
-    const API_BASE_URL = "https://api.mercadopago.com";
+    private $api_url_base;
+
+    function __construct() {
+      $i = func_num_args();
+
+      if ($i > 1) {
+        throw new MercadoPagoException("Invalid arguments. Use API BASE URL ONLY");
+      }
+
+      if ($i == 1) {
+        $this->api_url_base = func_get_arg(0);
+      }
+
+      if ($i < 1) {
+        $this->api_url_base = "https://api.mercadopago.com";
+      }
+    }
+
+    public function getURL(){
+      return $this->api_url_base;
+    }
 
     private static function build_request($request) {
         if (!extension_loaded ("curl")) {
@@ -468,7 +499,7 @@ class MPRestClient {
             $request["uri"] .= (strpos($request["uri"], "?") === false) ? "?" : "&";
             $request["uri"] .= self::build_query($request["params"]);
         }
-        curl_setopt($connect, CURLOPT_URL, self::API_BASE_URL . $request["uri"]);
+        curl_setopt($connect, CURLOPT_URL, self::getURL() . $request["uri"]);
 
         // Set data
         if (isset($request["data"])) {
