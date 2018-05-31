@@ -4,8 +4,8 @@
 	"keywords": ["mercadopago", "sdk"],
 	"authors": [
 		{
-			"name": "Horacio Casatti",
-			"email": "horacio.casatti@mercadolibre.com"
+			"name": "Fernando Neumeister",
+			"email": "fneumeister@flowcode.com.ar"
 		}
 	],
 	"require": {
