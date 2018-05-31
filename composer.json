@@ -1,5 +1,5 @@
 {
-	"name": "mercadopago/sdk-base-url-config",
+	"name": "flowcode/mercadopago-base-url-config",
 	"description": "MercadoPago SDK module for Payments integration. Whit API BASE URL configurable",
 	"keywords": ["mercadopago", "sdk"],
 	"authors": [
