@@ -1,5 +1,5 @@
 {
-	"name": "mercadopago/sdk/paytec",
+	"name": "mercadopago/sdk-paytec",
 	"description": "MercadoPago SDK module for Payments integration.",
 	"keywords": ["mercadopago", "sdk"],
 	"authors": [
