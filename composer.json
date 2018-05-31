@@ -1,6 +1,6 @@
 {
-	"name": "mercadopago/sdk-paytec",
-	"description": "MercadoPago SDK module for Payments integration.",
+	"name": "mercadopago/sdk-base-url-config",
+	"description": "MercadoPago SDK module for Payments integration. Whit API BASE URL configurable",
 	"keywords": ["mercadopago", "sdk"],
 	"authors": [
 		{
