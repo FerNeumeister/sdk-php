@@ -23,19 +23,24 @@ class MP {
     function __construct() {
         $i = func_num_args();
 
-        if ($i > 2 || $i < 1) {
+        if ($i > 3 || $i < 1) {
             throw new MercadoPagoException("Invalid arguments.");
         }
 
         if ($i == 1) {
             $this->ll_access_token = func_get_arg(0);
-            $this->mp_client = $this->initializeMPRestClient();
         }
 
         if ($i == 2) {
-          $this->ll_access_token = func_get_arg(0);
-          $this->mp_client = $this->initializeMPRestClient(func_get_arg(1));
+          $this->client_id = func_get_arg(0);
+          $this->client_secret = func_get_arg(1);
         }
+
+        if ($i == 3) {
+          $this->ll_access_token = func_get_arg(0);
+          $this->mp_client = $this->setApiBaseUrl(func_get_arg(1));
+        }
+
     }
 
     public function sandbox_mode($enable = NULL) {
@@ -47,12 +52,12 @@ class MP {
     }
 
     /**
-     * Initialize MPRestClient
+     * SetApiBaseUrl MPRestClient
      * @param string $api_base_url
      */
 
-    public function initializeMPRestClient($api_base_url = null){
-      return new MPRestClient($api_base_url);
+    public function setApiBaseUrl($api_base_url = null){
+      return MPRestClient::setURL($api_base_url);
     }
 
     /**
@@ -425,26 +430,14 @@ class MP {
  * MercadoPago cURL RestClient
  */
 class MPRestClient {
-    private $api_url_base;
+    private static $api_url_base = "https://api.mercadopago.com";
 
-    function __construct() {
-      $i = func_num_args();
-
-      if ($i > 1) {
-        throw new MercadoPagoException("Invalid arguments. Use API BASE URL ONLY");
-      }
-
-      if ($i == 1) {
-        $this->api_url_base = func_get_arg(0);
-      }
-
-      if ($i < 1) {
-        $this->api_url_base = "https://api.mercadopago.com";
-      }
+    public static function setURL($newUrl){
+      return self::$api_url_base = $newUrl;
     }
 
-    public function getURL(){
-      return $this->api_url_base;
+    public static function getURL(){
+      return self::$api_url_base;
     }
 
     private static function build_request($request) {
